@@ -1,5 +1,8 @@
+#pragma once
+
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include "camera.h"
 
 typedef struct Grid {
     int* grid;
@@ -15,4 +18,4 @@ int grid_get(Grid* grid, int x, int y);
 
 void grid_set(Grid* grid, int x, int y, int value);
 
-void grid_draw(Grid* grid, SDL_Renderer* renderer, SDL_Texture** textures, size_t textures_size, int tile_size);
+void grid_draw(Grid* grid, SDL_Renderer* renderer, SDL_Texture** textures, size_t textures_size, Camera camera);
