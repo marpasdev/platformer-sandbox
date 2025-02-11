@@ -9,6 +9,7 @@
 #include "grid.h"
 #include "player.h"
 #include "mathutils.h"
+#include "terrain.h"
 
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600
@@ -48,18 +49,18 @@ int main() {
     init(&window, &renderer);
 
     Grid terrain;
-    grid_create(&terrain, 200, 200);
+    grid_create(&terrain, 400, 150);
 
-    // testing the grid
-    grid_set(&terrain, 3, 3, 1);
-    grid_set(&terrain, 4, 3, 1);
+    terrain_generate(&terrain, (TerrainData){ .height = 150, .width = 400,
+        .flatness = 20, .peakheight = 10, .offset = 40 });
 
-    SDL_Texture* textures[3];
+    SDL_Texture* textures[4];
     textures[0] = NULL;
     textures[1] = IMG_LoadTexture(renderer, "assets/grass.png");
     textures[2] = IMG_LoadTexture(renderer, "assets/dirt.png");
+    textures[3] = IMG_LoadTexture(renderer, "assets/stone.png");
 
-    Player player = { .speed = 100.0f, .pos = (Vector2){ .x = 0, .y = 0 }};
+    Player player = { .speed = 100.0f, .pos = (Vector2){ .x = 20, .y = 10 }};
 
     SDL_Point player_end;
     SDL_QueryTexture(textures[1], NULL, NULL, &player_end.x, &player_end.y);
@@ -101,7 +102,7 @@ int main() {
         SDL_SetRenderDrawColor(renderer, 0, 180, 255, 255);
         SDL_RenderClear(renderer);
 
-        grid_draw(&terrain, renderer, textures, 2, camera);
+        grid_draw(&terrain, renderer, textures, 4, camera);
 
         player_draw(&player, renderer, textures[2], camera);
 
