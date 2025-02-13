@@ -7,7 +7,7 @@ set(CMAKE_C_STANDARD 11)
 
 find_package(SDL2 REQUIRED)
 
-add_executable(PlatformerSandbox main.c grid.c mathutils.c player.c camera.c terrain.c)
+add_executable(PlatformerSandbox main.c grid.c mathutils.c player.c camera.c terrain.c noise.c)
 
 target_include_directories(PlatformerSandbox PRIVATE ${SDL2_INCLUDE_DIRS})
 

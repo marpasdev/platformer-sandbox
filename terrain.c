@@ -3,10 +3,9 @@
 
 #include "terrain.h"
 #include "grid.h"
+#include "noise.h"
 
-void terrain_generate(Grid* terrain, TerrainData data) {
-    int* contour = (int*)malloc(sizeof(int) * data.width);
-
+static void contour_generate(int* contour, TerrainData data) {
     time_t seed = time(NULL);
     srand(seed);
 
@@ -21,10 +20,31 @@ void terrain_generate(Grid* terrain, TerrainData data) {
         height += data.offset;
         contour[x] = (int)height;
     }
+}
+
+static void caves_generate(Grid* terrain, TerrainData data) {
+    Noise noise;
+    noise_create(&noise, data.width, data.height);
+    noise_generate(&noise);
+
+    for (int y = data.offset; y < data.height; ++y) {
+        for (int x = 0; x < data.width; ++x) {
+            if (noise_get(&noise, x, y) < 0.7f /*&& grid_get(terrain, x, y) != 0*/) {
+                grid_set(terrain, x, y, 0);
+            }
+        }
+    }
+
+    noise_remove(&noise);
+}
+
+void terrain_generate(Grid* terrain, TerrainData data) {
+    int* contour = (int*)malloc(sizeof(int) * data.width);
+
+    contour_generate(contour, data);
 
     for (int x = 0; x < data.width; ++x) {
         grid_set(terrain, x, contour[x], 1);
-
 
         for (int y = contour[x] + 1; y < data.height; ++y) {
             if (y < contour[x] + 4) {
@@ -34,6 +54,8 @@ void terrain_generate(Grid* terrain, TerrainData data) {
             }
         }
     }
+
+    // caves_generate(terrain, data);
 
     free(contour);
 }
